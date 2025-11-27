@@ -71,6 +71,7 @@ export default function ChatPage() {
 
   const [showNewModal, setShowNewModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const initialTopics = [
     "Weekend trip ideas",
@@ -145,6 +146,7 @@ export default function ChatPage() {
       setConversations(prev => [convo, ...prev]);
       setActiveConvo(convo);
       setShowNewModal(false);
+      setSidebarOpen(false);
       markTopicsSeen();
       return convo;
     } catch (err) {
@@ -169,7 +171,6 @@ export default function ChatPage() {
       alert("Failed to delete chat.");
     }
   }
-
 
   async function loadMessages(convoId) {
     setLoadingMsgs(true);
@@ -253,7 +254,6 @@ export default function ChatPage() {
     }
   }
 
-
   function openNewModal(prefill = "") {
     setNewTitle(prefill || "");
     setShowNewModal(true);
@@ -264,6 +264,7 @@ export default function ChatPage() {
   async function handleStartTopic(topic) {
     setSuggestedTopics(prev => prev.filter(t => t !== topic));
     markTopicsSeen();
+    setSidebarOpen(false);
 
     try {
       const convo = await createConversationAndSave(topic);
@@ -279,10 +280,39 @@ export default function ChatPage() {
     window.location.reload();
   }
 
-
   return (
     <div className="chat-wrapper light">
-      <aside className="chat-sidebar" aria-label="Chat sidebar">
+      {/* Mobile Header with Hamburger */}
+      <div className="mobile-header">
+        <button 
+          className="hamburger-btn" 
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-label="Toggle menu"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div className="mobile-brand">Qorix</div>
+        <button className="mobile-new-chat" onClick={() => openNewModal()}>
+          <svg width="20" height="20" viewBox="0 0 24 24">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Sidebar Overlay for Mobile */}
+      {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
+
+      <aside className={`chat-sidebar ${sidebarOpen ? 'sidebar-open' : ''}`} aria-label="Chat sidebar">
+        <div className="sidebar-close-btn-container">
+          <button className="sidebar-close-btn" onClick={() => setSidebarOpen(false)} aria-label="Close sidebar">
+            ✕
+          </button>
+        </div>
+
         <div className="sidebar-top">
           <div className="sidebar-brand">
             <div className="brand-name" style={{ fontSize: "38px" }}>Qorix</div>
@@ -314,7 +344,7 @@ export default function ChatPage() {
               <div
                 key={c._id}
                 className={`sidebar-item ${activeConvo && c._id === activeConvo._id ? "active" : ""}`}
-                onClick={() => { markTopicsSeen(); setActiveConvo(c); }}
+                onClick={() => { markTopicsSeen(); setActiveConvo(c); setSidebarOpen(false); }}
                 role="button"
                 tabIndex={0}
               >
