@@ -11,14 +11,26 @@ const app = express();
 // Middlewares
 app.use(express.json());
 
-const FRONTEND_ORIGINS = (process.env.FRONTEND_ORIGINS || 'http://localhost:5173').split(',');
+// Parse allowed origins (comma-separated) from env
+const FRONTEND_ORIGINS = (process.env.FRONTEND_ORIGINS || 'http://localhost:5173').split(',').map(s => s.trim()).filter(Boolean);
+
 app.use(cors({
   origin: (origin, callback) => {
+    // allow requests with no origin (curl, server-to-server, mobile)
     if (!origin) return callback(null, true);
-    if (FRONTEND_ORIGINS.includes(origin)) return callback(null, true);
+
+    if (FRONTEND_ORIGINS.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // helpful logging for debugging in server logs
+    console.warn('CORS blocked - origin not allowed:', origin);
     return callback(new Error('CORS policy: origin not allowed'), false);
-  }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
 }));
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
