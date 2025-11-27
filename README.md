@@ -1,4 +1,4 @@
-# Qorix — AI Support Chat
+# Qorix - AI Support Chat
 
 A minimalist, production-minded conversational support platform built with the MERN stack and integrated with Google Gemini Flash (Generative AI). Qorix combines classic full‑stack engineering with modern AI capabilities to deliver secure, scalable conversational support.
 
