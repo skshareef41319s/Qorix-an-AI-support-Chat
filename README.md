@@ -2,6 +2,8 @@
 
 A minimalist, production-minded conversational support platform built with the MERN stack and integrated with Google Gemini Flash (Generative AI). Qorix combines classic full‑stack engineering with modern AI capabilities to deliver secure, scalable conversational support.
 
+Live demo / Hosting: https://qorix-an-ai-support-chat.vercel.app/
+
 ## Overview
 
 Qorix provides:
@@ -97,6 +99,9 @@ Start the client:
 npm run dev
 ```
 Frontend runs on: http://localhost:5173
+
+If you'd rather try the deployed version, the live demo is available at:
+https://qorix-an-ai-support-chat.vercel.app/
 
 ## How the AI Integration Works
 
